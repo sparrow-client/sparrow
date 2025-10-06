@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello from Electron renderer!</title>
+  </head>
+  <body>
+    <div id="navigation-panel">
+      <input type="file" class="action system-io" id="file-load-btn" accept=".json"></input>
+      <label for="file-load-btn" class="file-label">
+        Choose File
+      </label>
+    </div>
+    <div id="editing-panel">
+      <div id="editing-pane">
+        <input type="text" value="enter your URL here" id="urlInput"/>
+        <textarea id="editing-textarea"></textarea >
+      </div>
+      <button id="reformat-btn">Reformat</button>
+      <button id="send">Send</button>
+    </div>
+    <div id="navigation-panel">
+      <h2>The overview of the various steps of a file goes here</h2>
+    </div>
+  </body>
+  <script type="module" src="./renderer.js"></script>
+</html>

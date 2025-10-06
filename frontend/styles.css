@@ -1,0 +1,16 @@
+#file-load-btn {
+  display: none;
+}
+
+.file-label {
+  cursor: pointer;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.file-label:hover {
+  background: #0056b3;
+}
