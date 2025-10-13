@@ -17,20 +17,27 @@
   <body>
     <div id="navigation-panel">
       <input type="file" class="action system-io" id="file-load-btn" accept=".json"></input>
-      <label for="file-load-btn" class="file-label">
-        Choose File
-      </label>
+      <!-- <label for="file-load-btn" class="file-label"> -->
+      <!--   Choose File -->
+      <!-- </label> -->
+      <div id="loaded-file-list" class="list">
+        <h3>column of file names</h3>
+      </div>
     </div>
     <div id="editing-panel">
       <div id="editing-pane">
-        <input type="text" value="enter your URL here" id="urlInput"/>
+        <input type="text" value="enter your URL here" id="url-input"/>
         <textarea id="editing-textarea"></textarea >
+        <div id="editor-buttons">
+          <button id="reformat-btn">Reformat</button>
+          <button id="send">Send</button>
+        </div>
+        <div id="response-panel">
+          <h3>response goes here</h3>
+        </div>
       </div>
-      <button id="reformat-btn">Reformat</button>
-      <button id="send">Send</button>
-    </div>
-    <div id="navigation-panel">
-      <h2>The overview of the various steps of a file goes here</h2>
+      <div id="structure-pane">
+      </div>
     </div>
   </body>
   <script type="module" src="./renderer.js"></script>

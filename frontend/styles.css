@@ -1,16 +1,21 @@
-#file-load-btn {
-  display: none;
+body {
+  background-color: #b58900;
 }
 
-.file-label {
-  cursor: pointer;
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border-radius: 4px;
-  display: inline-block;
+body {
+  display: flex;
 }
 
-.file-label:hover {
-  background: #0056b3;
+#editing-panel {
+  display: flex;
+}
+
+#editing-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
 }
