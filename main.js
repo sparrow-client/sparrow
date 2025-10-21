@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const fs = require('fs').promises;
 
 const path = require('node:path')
 
@@ -15,7 +16,23 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('ping', () => 'pong')
+  ipcMain.handle('open-file-dialog', async() => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [
+        { name: 'Text Files', extensions: ['json'] }
+      ]
+    });
+
+    if (result.canceled) {
+      return null;
+    }
+
+    const filepath = result.filePaths[0];
+    const content = await fs.readFile(filepath, 'utf8');
+
+    return { filepath, content };
+  });
   createWindow()
 
   app.on('activate', () => {

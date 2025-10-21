@@ -1,34 +1,47 @@
 class NavigationPane {
   #mainPaneRef;
   #loadedFileListDOM;
-  #files = [];
+  #files = new Map();
   constructor(mainPane) {
     this.#mainPaneRef = mainPane;
     this.#loadedFileListDOM = document.getElementById('loaded-file-list');
 
+    this.#wireUploadButton();
+
   }
 
   loadAndSelectFile(file) {
-    this.#files.push(file);
-    this.#mainPaneRef.display(file);
+    const loadedFileButton = document.createElement('button');
+    loadedFileButton.dataset.filename = file.filepath;
+    loadedFileButton.className = 'loaded-file';
+    loadedFileButton.textContent = file.filepath;
+    loadedFileButton.addEventListener('click', () => { this.#mainPaneRef.display(file.filepath); })
 
-    const loadedFileEntry = document.createElement('button');
-    loadedFileEntry.dataset.filename = file.name;
-    loadedFileEntry.className = 'loaded-file';
-    loadedFileEntry.textContent = file.name;
-    loadedFileEntry.addEventListener('click', () => { this.#mainPaneRef.display(file); })
+    if (!this.#files.has(file.filepath)) {
 
-    console.log(`#${file.name}`);
-    const existingFileEntry = this.#loadedFileListDOM.querySelector(`[data-filename='${file.name}']`);
-    console.log(existingFileEntry);
+      this.#mainPaneRef.load(file.filepath, file.content);
+      const existingFileButton = this.#loadedFileListDOM.querySelector(`[data-filename='${file.name}']`);
 
-    if (existingFileEntry != null) {
-      window.alert('found duplicate entry, replacing existing entry with new one');
-      this.#loadedFileListDOM.replaceChild(loadedFileEntry, existingFileEntry);
+      this.#loadedFileListDOM.appendChild(loadedFileButton);
+
     } else {
-      this.#loadedFileListDOM.appendChild(loadedFileEntry);
+      window.alert('found duplicate entry, replacing existing entry with new one');
+      this.#loadedFileListDOM.replaceChild(loadedFileButton, existingFileButton);
     }
+    this.#files.set(file.filepath, file.content);
   }
+
+  #wireUploadButton() {
+    document.getElementById('file-load-btn').addEventListener('click', async() => {
+      const result = await window.electronApi.openFile();
+
+      if (result) {
+        console.log(result);
+        this.loadAndSelectFile(result);
+      }
+    })
+  }
+
 }
 
 export { NavigationPane };
