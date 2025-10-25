@@ -1,22 +1,20 @@
-import {NavigationPane} from './navigation-pane.js';
-import { MainPane } from './main-pane.js';
+import { NavigationPane } from "./navigation-pane.js";
+import { MainPane } from "./main-pane.js";
 
 class Window {
   #mainPane;
   #navigationPane;
 
   constructor() {
-    this.#mainPane = new MainPane(
-      {
-        textAreaRef: 'editing-textarea',
-        urlInputRef: 'url-input'
-      });
+    this.#mainPane = new MainPane({
+      textAreaRef: "editing-textarea",
+      urlInputRef: "url-input",
+    });
 
-    this.#navigationPane = new NavigationPane(
-      { 
-        mainPane: this.#mainPane, 
-        loadedFileListRef: 'loaded-file-list'
-      });
+    this.#navigationPane = new NavigationPane({
+      mainPane: this.#mainPane,
+      loadedFileListRef: "loaded-file-list",
+    });
 
     this.#wireUploadButton();
     this.#wireReformatButton();
@@ -24,31 +22,36 @@ class Window {
   }
 
   #wireUploadButton() {
-    document.getElementById('file-load-btn').addEventListener('click', async() => {
-      const result = await window.electronApi.openFile();
+    document
+      .getElementById("file-load-btn")
+      .addEventListener("click", async () => {
+        const result = await window.electronApi.openFile();
 
-      if (result) {
-        this.#navigationPane.loadAndSelectFile(result);
-      }
-    })
+        if (result) {
+          this.#navigationPane.loadAndSelectFile(result);
+        }
+      });
   }
 
   #wireReformatButton() {
-    document.getElementById('reformat-btn').addEventListener('click', () => {
+    document.getElementById("reformat-btn").addEventListener("click", () => {
       this.#mainPane.reformat();
-    })
+    });
   }
 
   #wireSaveButton() {
-    document.getElementById('save-btn').addEventListener('click', async() => {
-      const currentFile = this.#mainPane.currentFile()
+    document.getElementById("save-btn").addEventListener("click", async () => {
+      const currentFile = this.#mainPane.currentFile();
       if (!currentFile) {
-        window.alert('no file selected --> nothing to save')
+        window.alert("no file selected --> nothing to save");
         return;
       }
       const content = document.getElementById("editing-textarea").value;
-      const result = await window.electronApi.saveFile({ currentFile: currentFile, content: content});
-    })
+      const result = await window.electronApi.saveFile({
+        currentFile: currentFile,
+        content: content,
+      });
+    });
   }
 }
 

@@ -1,6 +1,6 @@
 // import {NavigationPane} from './component/navigation-pane.js';
 // import { MainPane } from './component/main-pane.js';
-import { Window } from './component/window.js';
+import { Window } from "./component/window.js";
 
 const appWindow = new Window();
 // const mainPane = new MainPane(
