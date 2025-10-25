@@ -5,9 +5,6 @@ class NavigationPane {
   constructor(mainPane) {
     this.#mainPaneRef = mainPane;
     this.#loadedFileListDOM = document.getElementById('loaded-file-list');
-
-    this.#wireUploadButton();
-
   }
 
   loadAndSelectFile(file) {
@@ -30,18 +27,6 @@ class NavigationPane {
     }
     this.#files.set(file.filepath, file.content);
   }
-
-  #wireUploadButton() {
-    document.getElementById('file-load-btn').addEventListener('click', async() => {
-      const result = await window.electronApi.openFile();
-
-      if (result) {
-        console.log(result);
-        this.loadAndSelectFile(result);
-      }
-    })
-  }
-
 }
 
 export { NavigationPane };

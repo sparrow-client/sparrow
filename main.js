@@ -5,8 +5,8 @@ const path = require('node:path')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
@@ -32,6 +32,21 @@ app.whenReady().then(() => {
     const content = await fs.readFile(filepath, 'utf8');
 
     return { filepath, content };
+  });
+
+  ipcMain.handle('save-file', async(event, { filename, content }) => {
+    const { filePath } = await dialog.showSaveDialog({
+      title: 'Save File',
+      defaultPath: filename,
+      filters: [
+        {name: 'Text Files', extensions: ['json']}
+      ]
+    })
+
+    if (filePath) {
+      await fs.writeFile(filePath, content, 'utf8');
+      return filePath;
+    }
   });
   createWindow()
 
