@@ -12,7 +12,11 @@ class Window {
         urlInputRef: 'url-input'
       });
 
-    this.#navigationPane = new NavigationPane(this.#mainPane);
+    this.#navigationPane = new NavigationPane(
+      { 
+        mainPane: this.#mainPane, 
+        loadedFileListRef: 'loaded-file-list'
+      });
 
     this.#wireUploadButton();
     this.#wireReformatButton();
@@ -36,7 +40,7 @@ class Window {
   }
 
   #wireSaveButton() {
-    document.getElementById('save').addEventListener('click', async() => {
+    document.getElementById('save-btn').addEventListener('click', async() => {
       const currentFile = this.#mainPane.currentFile()
       if (!currentFile) {
         window.alert('no file selected --> nothing to save')
