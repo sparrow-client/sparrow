@@ -1,20 +1,17 @@
-import { NavigationPane } from "./navigation-pane.js";
 import { MainPane } from "./main-pane.js";
 
 class Window {
   #mainPane;
   #navigationPane;
+  #fileButtonList;
+  #files = new Map();
 
   constructor() {
     this.#mainPane = new MainPane({
       textAreaRef: "editing-textarea",
       urlInputRef: "url-input",
     });
-
-    this.#navigationPane = new NavigationPane({
-      mainPane: this.#mainPane,
-      loadedFileListRef: "loaded-file-list",
-    });
+    this.#fileButtonList = document.getElementById("loaded-file-list");
 
     this.#wireUploadButton();
     this.#wireReformatButton();
@@ -28,7 +25,7 @@ class Window {
         const result = await window.electronApi.openFile();
 
         if (result) {
-          this.#navigationPane.loadAndSelectFile(result);
+          this.#loadAndSelectFile(result);
         }
       });
   }
@@ -37,6 +34,30 @@ class Window {
     document.getElementById("reformat-btn").addEventListener("click", () => {
       this.#mainPane.reformat();
     });
+  }
+
+  #loadAndSelectFile(file) {
+    const loadedFileButton = document.createElement("button");
+    loadedFileButton.dataset.filename = file.filepath;
+    loadedFileButton.className = "loaded-file";
+    loadedFileButton.textContent = file.filepath;
+    loadedFileButton.addEventListener("click", () => {
+      this.#mainPane.display(file.filepath);
+    });
+
+    if (!this.#files.has(file.filepath)) {
+      this.#fileButtonList.appendChild(loadedFileButton);
+    } else {
+      const existingFileButton = this.#fileButtonList.querySelector(
+        `[data-filename='${file.filepath}']`
+      );
+      window.alert(
+        "found duplicate entry, replacing existing entry with new one",
+      );
+      this.#fileButtonList.replaceChild(loadedFileButton, existingFileButton);
+    }
+    this.#mainPane.load(file.filepath, file.content);
+    this.#files.set(file.filepath, file.content);
   }
 
   #wireSaveButton() {

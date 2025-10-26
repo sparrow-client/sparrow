@@ -11,6 +11,7 @@ class MainPane {
   }
 
   load(filename, content) {
+    console.log("displaying new file");
     const usecase = JSON.parse(content);
     this.#textArea.value = content;
     this.#files.set(filename, content);
