@@ -36,27 +36,14 @@ class Window {
     });
   }
 
-  #loadAndSelectFile(file) {
-    const loadedFileButton = document.createElement("button");
-    loadedFileButton.dataset.filename = file.filepath;
-    loadedFileButton.className = "loaded-file";
-    loadedFileButton.textContent = file.filepath;
-    loadedFileButton.addEventListener("click", () => {
-      this.#mainPane.display(file.filepath);
-    });
+  #findFileBtn(filename) {
+    return this.#fileButtonList.querySelector(`[data-filename='${filename}']`);
+  }
 
-    if (!this.#files.has(file.filepath)) {
-      this.#fileButtonList.appendChild(loadedFileButton);
-    } else {
-      const existingFileButton = this.#fileButtonList.querySelector(
-        `[data-filename='${file.filepath}']`
-      );
-      window.alert(
-        "found duplicate entry, replacing existing entry with new one",
-      );
-      this.#fileButtonList.replaceChild(loadedFileButton, existingFileButton);
-    }
-    this.#mainPane.load(file.filepath, file.content);
+  #loadAndSelectFile(file) {
+    const loadedFileButton = this.buildAndRegisterNavigationButton({ filepath: file.filepath, withOverrideAlert: true });
+
+    this.#mainPane.load(file.filepath, file.content, loadedFileButton);
     this.#files.set(file.filepath, file.content);
   }
 
@@ -72,7 +59,37 @@ class Window {
         currentFile: currentFile,
         content: content,
       });
+
+      const loadedFileButton = this.buildAndRegisterNavigationButton({ filepath: currentFile, withOverrideAlert: false });
+      this.#mainPane.load(currentFile, content, loadedFileButton);
     });
+  }
+
+  buildAndRegisterNavigationButton({ filepath, withOverrideAlert }) {
+    const loadedFileButton = document.createElement("button");
+    loadedFileButton.dataset.filename = filepath;
+    loadedFileButton.className = "loaded-file";
+    loadedFileButton.textContent = filepath;
+    loadedFileButton.addEventListener("click", () => {
+      this.#mainPane.display(filepath);
+    });
+
+    if (!this.#files.has(filepath)) {
+      this.#fileButtonList.appendChild(loadedFileButton);
+    } else {
+      const existingFileButton = this.#fileButtonList.querySelector(
+        `[data-filename='${filepath}']`
+      );
+      if (withOverrideAlert) {
+        window.alert(
+          "found duplicate entry, replacing existing entry with new one",
+        );
+      }
+      this.#fileButtonList.replaceChild(loadedFileButton, existingFileButton);
+    }
+
+    return loadedFileButton;
+
   }
 }
 
