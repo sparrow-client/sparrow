@@ -31,16 +31,18 @@ class MainPane {
   display(filename) {
     if (this.#currentFile !== null && this.#currentFile !== undefined) {
       // save any intermediate changes before switching to newly selected file
-      const state = this.#files.get(this.#currentFile);
-      state.current = this.#textArea.value;
+      this.currentFileState().update(this.#textArea.value);
     }
-    this.#textArea.value = this.#files.get(filename).current;
+    this.#textArea.value = this.currentFileState().current;
     this.#currentFile = filename;
   }
 
   reformat() {
     const originalJson = JSON.parse(this.#textArea.value);
-    this.#textArea.value = JSON.stringify(originalJson, null, 2);
+    const reformattedJson = JSON.stringify(originalJson, null, 2)
+    this.currentFileState().update(reformattedJson);
+    this.#textArea.value = reformattedJson;
+    this.#manualColorReset();
   }
 
   currentFile() {
@@ -53,6 +55,13 @@ class MainPane {
 
   hasCurrentFileChanged() {
     return this.#currentFile && this.#files.get(this.#currentFile).hasChanges(this.#textArea.value)
+  }
+
+  #manualColorReset() {
+    if (!this.hasCurrentFileChanged()) {
+      console.log("resetting color");
+      this.currentFileState().button.style.backgroundColor = "";
+    }
   }
 }
 
@@ -69,6 +78,10 @@ class FileState {
 
   hasChanges(textAreaContent) {
     return this.saved !== textAreaContent;
+  }
+
+  update(newContent) {
+    this.current = newContent;
   }
 }
 
