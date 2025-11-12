@@ -1,3 +1,5 @@
+import { Usecase } from "../../core/concepts.js";
+
 class MainPane {
   #textArea;
   #urlInput;
@@ -45,6 +47,10 @@ class MainPane {
     this.#manualColorReset();
   }
 
+  run() {
+    return this.currentFileState().currentUsecase.run()
+  }
+
   currentFile() {
     return this.#currentFile;
   }
@@ -68,11 +74,13 @@ class MainPane {
 class FileState {
   saved;
   current;
+  currentUsecase;
   button;
 
   constructor({ savedState, currentState, btn }) {
     this.saved = savedState;
     this.current = currentState;
+    this.currentUsecase = new Usecase(currentState);
     this.button = btn;
   }
 
@@ -82,6 +90,7 @@ class FileState {
 
   update(newContent) {
     this.current = newContent;
+    this.currentUsecase = new Usecase(newContent);
   }
 }
 

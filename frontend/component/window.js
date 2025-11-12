@@ -16,6 +16,7 @@ class Window {
     this.#wireUploadButton();
     this.#wireReformatButton();
     this.#wireSaveButton();
+    this.#wireRunButton();
   }
 
   #wireUploadButton() {
@@ -63,6 +64,12 @@ class Window {
       const loadedFileButton = this.buildAndRegisterNavigationButton({ filepath: currentFile, withOverrideAlert: false });
       this.#mainPane.load(currentFile, content, loadedFileButton);
     });
+  }
+
+  #wireRunButton() {
+    document.getElementById("run-btn").addEventListener("click", () => {
+      console.log(this.#mainPane.run());
+    })
   }
 
   buildAndRegisterNavigationButton({ filepath, withOverrideAlert }) {
