@@ -10,13 +10,10 @@ class Usecase {
   }
 
   run() {
-    const results = [];
-    for (const step of this.steps()) {
-      // do stuff
-    }
-
+    const results = window.coreApi.runUsecase({ usecaseJson: this.#json });
+    console.log(results);
     return results;
   }
 }
 
-export { Usecase }
+export { Usecase };

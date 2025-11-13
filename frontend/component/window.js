@@ -42,7 +42,10 @@ class Window {
   }
 
   #loadAndSelectFile(file) {
-    const loadedFileButton = this.buildAndRegisterNavigationButton({ filepath: file.filepath, withOverrideAlert: true });
+    const loadedFileButton = this.buildAndRegisterNavigationButton({
+      filepath: file.filepath,
+      withOverrideAlert: true,
+    });
 
     this.#mainPane.load(file.filepath, file.content, loadedFileButton);
     this.#files.set(file.filepath, file.content);
@@ -57,11 +60,14 @@ class Window {
       }
       const content = document.getElementById("editing-textarea").value;
       const result = await window.electronApi.saveFile({
-        currentFile: currentFile,
+        filename: currentFile,
         content: content,
       });
 
-      const loadedFileButton = this.buildAndRegisterNavigationButton({ filepath: currentFile, withOverrideAlert: false });
+      const loadedFileButton = this.buildAndRegisterNavigationButton({
+        filepath: currentFile,
+        withOverrideAlert: false,
+      });
       this.#mainPane.load(currentFile, content, loadedFileButton);
     });
   }
@@ -69,7 +75,7 @@ class Window {
   #wireRunButton() {
     document.getElementById("run-btn").addEventListener("click", () => {
       console.log(this.#mainPane.run());
-    })
+    });
   }
 
   buildAndRegisterNavigationButton({ filepath, withOverrideAlert }) {
@@ -85,7 +91,7 @@ class Window {
       this.#fileButtonList.appendChild(loadedFileButton);
     } else {
       const existingFileButton = this.#fileButtonList.querySelector(
-        `[data-filename='${filepath}']`
+        `[data-filename='${filepath}']`,
       );
       if (withOverrideAlert) {
         window.alert(
@@ -96,7 +102,6 @@ class Window {
     }
 
     return loadedFileButton;
-
   }
 }
 

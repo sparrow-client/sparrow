@@ -1,64 +1,45 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
-const fs = require('fs').promises;
+const { CoreApi } = require("./core/core-api.js");
+const { IOAPI } = require("./io-api.js");
 
-const path = require('node:path')
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const fs = require("fs").promises;
+
+const path = require("node:path");
+
+const io = new IOAPI();
+const core = new CoreApi();
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 900,
     height: 700,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
 
-  win.loadFile('frontend/index.html')
-}
+  win.loadFile("frontend/index.html");
+};
 
 app.whenReady().then(() => {
-  ipcMain.handle('open-file-dialog', async() => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openFile'],
-      filters: [
-        { name: 'Text Files', extensions: ['json'] }
-      ]
-    });
+  ipcMain.handle("open-file-dialog", io.openFile);
+  ipcMain.handle("save-file", io.saveFile);
 
-    if (result.canceled) {
-      return null;
-    }
+  ipcMain.handle("core-run-usecase", (event, { json }) =>
+    core.runUsecase({ usecaseJson: json }),
+  );
 
-    const filepath = result.filePaths[0];
-    const content = await fs.readFile(filepath, 'utf8');
+  createWindow();
 
-    return { filepath, content };
-  });
-
-  ipcMain.handle('save-file', async(event, { filename, content }) => {
-    const { filePath } = await dialog.showSaveDialog({
-      title: 'Save File',
-      defaultPath: filename,
-      filters: [
-        {name: 'Text Files', extensions: ['json']}
-      ]
-    })
-
-    if (filePath) {
-      await fs.writeFile(filePath, content, 'utf8');
-      return filePath;
-    }
-  });
-  createWindow()
-
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindow().length === 0) {
-      createWindow()
+      createWindow();
     }
-  })
-})
+  });
+});
 
-app.on('window-all-closed', () => {
-  if (process.platform != 'darwin') {
-    app.quit()
+app.on("window-all-closed", () => {
+  if (process.platform != "darwin") {
+    app.quit();
   }
-})
+});

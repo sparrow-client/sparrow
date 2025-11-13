@@ -19,13 +19,17 @@ class MainPane {
         console.log("resetting color");
         this.currentFileState().button.style.backgroundColor = "";
       }
-    })
+    });
   }
 
   load(filename, content, btn) {
     const usecase = JSON.parse(content);
     this.#textArea.value = content;
-    const state = new FileState({ savedState: content, currentState: content, btn: btn });
+    const state = new FileState({
+      savedState: content,
+      currentState: content,
+      btn: btn,
+    });
     this.#files.set(filename, state);
     this.#currentFile = filename;
   }
@@ -41,14 +45,14 @@ class MainPane {
 
   reformat() {
     const originalJson = JSON.parse(this.#textArea.value);
-    const reformattedJson = JSON.stringify(originalJson, null, 2)
+    const reformattedJson = JSON.stringify(originalJson, null, 2);
     this.currentFileState().update(reformattedJson);
     this.#textArea.value = reformattedJson;
     this.#manualColorReset();
   }
 
   run() {
-    return this.currentFileState().currentUsecase.run()
+    return this.currentFileState().currentUsecase.run();
   }
 
   currentFile() {
@@ -60,7 +64,10 @@ class MainPane {
   }
 
   hasCurrentFileChanged() {
-    return this.#currentFile && this.#files.get(this.#currentFile).hasChanges(this.#textArea.value)
+    return (
+      this.#currentFile &&
+      this.#files.get(this.#currentFile).hasChanges(this.#textArea.value)
+    );
   }
 
   #manualColorReset() {
