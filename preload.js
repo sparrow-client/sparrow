@@ -9,5 +9,5 @@ contextBridge.exposeInMainWorld("electronApi", {
 contextBridge.exposeInMainWorld("coreApi", {
   updateState: (state) => ipcRenderer.invoke("update-app-state"),
   runUsecase: ({ usecaseJson }) =>
-    ipcRenderer.invoke("core-run-usecase", { usecaseJson }),
+    ipcRenderer.invoke("core-run-usecase", { json: usecaseJson }),
 });

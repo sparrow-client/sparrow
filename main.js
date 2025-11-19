@@ -25,8 +25,9 @@ app.whenReady().then(() => {
   ipcMain.handle("open-file-dialog", io.openFile);
   ipcMain.handle("save-file", io.saveFile);
 
-  ipcMain.handle("core-run-usecase", (event, { json }) =>
-    core.runUsecase({ usecaseJson: json }),
+  ipcMain.handle("core-run-usecase", (event, { json }) => {
+    core.runUsecase({ usecaseJson: json })
+  }
   );
 
   createWindow();
