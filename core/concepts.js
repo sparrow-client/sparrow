@@ -9,9 +9,10 @@ class Usecase {
     return this.#json.steps;
   }
 
-  run() {
+  async run() {
     const jsonString = JSON.stringify(this.#json, null, 2);
     const results = window.coreApi.runUsecase({ usecaseJson: jsonString });
+    console.log("retrieved results:");
     console.log(results);
     return results;
   }

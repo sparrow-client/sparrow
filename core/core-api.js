@@ -1,31 +1,37 @@
 import * as http from "node:http";
 
 class CoreApi {
-  runUsecase({ usecaseJson }) {
+  async runUsecase({ usecaseJson }) {
     const json = JSON.parse(usecaseJson);
     const step = json.steps[0];
-    const url = step.do.url
-    const method = step.do.method;
-    const body = step.do.body;
 
-    console.log(`I schaffe was! ${ url }`);
+    const promises = [];
 
-    const promise = new Promise((resolve, reject) => {
-      const req = http.request(url, { method: method, timeout: 300, headers: { "content-type": "application/json" } }, (res) => {
-        let body = "";
+    for (const step of json.steps) {
+      const url = step.do.url;
+      const method = step.do.method;
+      const body = step.do.body;
+      const headers = { "content-type": "application/json" };
+      for (const header in step.do.headers) {
+        headers.push(header);
+        headers.push(step.do.headers[header]);
+      }
 
-        res.on("data", (chunk) => body += chunk);
-        res.on("end", () => resolve(body));
-      });
+      const promise = fetch(url, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(body),
+      }).then((response) => response.json());
+      promises.push(promise);
+    }
 
-      req.on("error", (e) => reject(e));
-
-      req.write(JSON.stringify(body));
-      req.end();
-    });
-
-    promise.then(body => console.log(body))
-      .catch( err => console.error(err));
+    const responses = [];
+    const iter = await Promise.all(promises);
+    for (const promise of iter) {
+      responses.push(promise);
+    }
+    console.log(responses);
+    return responses;
   }
 }
 

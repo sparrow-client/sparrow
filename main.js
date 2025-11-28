@@ -26,7 +26,7 @@ app.whenReady().then(() => {
   ipcMain.handle("save-file", io.saveFile);
 
   ipcMain.handle("core-run-usecase", (event, { json }) => {
-    core.runUsecase({ usecaseJson: json })
+    return core.runUsecase({ usecaseJson: json })
   }
   );
 
