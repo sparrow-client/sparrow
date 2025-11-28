@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +11,7 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div id="navigation-panel">
@@ -19,23 +19,20 @@
       <!-- <label for="file-load-btn" class="file-label"> -->
       <!--   Choose File -->
       <!-- </label> -->
-      <div id="loaded-file-list" class="list">
-      </div>
+      <div id="loaded-file-list" class="list"></div>
     </div>
     <div id="editing-panel">
       <div id="editing-pane">
-        <input type="text" value="enter your URL here" id="url-input"/>
-        <textarea id="editing-textarea"></textarea >
+        <input type="text" value="enter your URL here" id="url-input" />
+        <textarea id="editing-textarea"></textarea>
         <div id="editor-buttons">
           <button id="reformat-btn">Reformat</button>
           <button id="run-btn">Run</button>
           <button id="save-btn">Save</button>
         </div>
-        <div id="response-panel">
-        </div>
+        <div id="response-panel"></div>
       </div>
-      <div id="structure-pane">
-      </div>
+      <div id="structure-pane"></div>
     </div>
   </body>
   <script type="module" src="./renderer.js"></script>
