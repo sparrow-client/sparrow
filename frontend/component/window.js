@@ -10,6 +10,7 @@ class Window {
     this.#mainPane = new MainPane({
       textAreaRef: "editing-textarea",
       urlInputRef: "url-input",
+      responsePanel: "response-panel",
     });
     this.#fileButtonList = document.getElementById("loaded-file-list");
 
@@ -73,9 +74,9 @@ class Window {
   }
 
   #wireRunButton() {
-    document.getElementById("run-btn").addEventListener("click", () => {
-      console.log(this.#mainPane.run());
-    });
+    document
+      .getElementById("run-btn")
+      .addEventListener("click", () => this.#mainPane.run());
   }
 
   buildAndRegisterNavigationButton({ filepath, withOverrideAlert }) {

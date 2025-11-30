@@ -2,13 +2,15 @@ import { Usecase } from "../../core/concepts.js";
 
 class MainPane {
   #textArea;
+  #responsePanel;
   #urlInput;
   #files;
   #currentFile;
 
-  constructor({ textAreaRef, urlInputRef }) {
+  constructor({ textAreaRef, urlInputRef, responsePanel }) {
     this.#textArea = document.getElementById(textAreaRef);
     this.#urlInput = document.getElementById(urlInputRef);
+    this.#responsePanel = document.getElementById(responsePanel);
     this.#files = new Map();
 
     this.#textArea.addEventListener("input", (event) => {
@@ -51,8 +53,18 @@ class MainPane {
     this.#manualColorReset();
   }
 
-  run() {
-    return this.currentFileState().currentUsecase.run();
+  async run() {
+    const responseObjects = await this.currentFileState().currentUsecase.run();
+    console.log(responseObjects);
+    let counter = 0;
+    for (const { statusCode, body } of responseObjects) {
+      const responsePane = document.createElement("div");
+      responsePane.id = counter;
+      counter += 1;
+      responsePane.innerHTML = statusCode + " ||| " + body;
+
+      this.#responsePanel.appendChild(responsePane);
+    }
   }
 
   currentFile() {

@@ -21,7 +21,14 @@ class CoreApi {
         method: method,
         headers: headers,
         body: JSON.stringify(body),
-      }).then((response) => response.json());
+      }).then(async (response) => {
+        const json = await response.json();
+        return {
+          statusCode: response.status,
+          body: JSON.stringify(json, null, 2),
+        };
+      });
+
       promises.push(promise);
     }
 
@@ -30,7 +37,6 @@ class CoreApi {
     for (const promise of iter) {
       responses.push(promise);
     }
-    console.log(responses);
     return responses;
   }
 }
