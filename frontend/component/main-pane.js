@@ -41,8 +41,8 @@ class MainPane {
       // save any intermediate changes before switching to newly selected file
       this.currentFileState().update(this.#textArea.value);
     }
-    this.#textArea.value = this.currentFileState().current;
     this.#currentFile = filename;
+    this.#textArea.value = this.currentFileState().current;
   }
 
   reformat() {

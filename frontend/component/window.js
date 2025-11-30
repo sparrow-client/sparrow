@@ -84,10 +84,9 @@ class Window {
     loadedFileButton.dataset.filename = filepath;
     loadedFileButton.className = "loaded-file";
     loadedFileButton.textContent = filepath;
-    loadedFileButton.addEventListener("click", () => {
-      this.#mainPane.display(filepath);
-    });
+    loadedFileButton.addEventListener("click", () => this.#mainPane.display(filepath));
 
+    console.log(filepath);
     if (!this.#files.has(filepath)) {
       this.#fileButtonList.appendChild(loadedFileButton);
     } else {
