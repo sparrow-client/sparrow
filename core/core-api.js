@@ -16,6 +16,7 @@ class CoreApi {
       const body = step.do.body;
       this.#resolve(body);
 
+
       const headers = { "content-type": "application/json" };
       for (const header in step.do.headers) {
         headers.push(header);
@@ -30,13 +31,14 @@ class CoreApi {
         body: JSON.stringify(body),
       })
       const json = await response.json();
+      if (response.status.toString().match(/^[45]\d{2}$/)) {
+        responses.push({ statusCode: response.status, body: "{}" });
+      } else {
       this.#updateSavedState({ json, savedVariables });
 
       responses.push({ statusCode: response.status, body: JSON.stringify(json, null, 2) });
+      }
     }
-
-    console.log("IN CORE");
-    console.log(responses);
     return responses;
   }
 
@@ -69,7 +71,7 @@ class CoreApi {
       return value;
     } else {
       for (const [k, v] of Object.entries(json)) {
-        json[k] = this.#resolve(json[k]);
+        this.#resolve(json[k]);
       }
     }
   }
@@ -108,7 +110,7 @@ function lookup({ pointer, json }) {
   const value = pointer.split(".").reduce((current, prop) => current?.[prop], json);
 
   if (!value) {
-    throw new Error(`invalid pointer ${pointer}`);
+    throw new Error(`invalid pointer {{${pointer}}}`);
   }
 
   return value;

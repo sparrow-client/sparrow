@@ -54,11 +54,8 @@ class MainPane {
 
   async run() {
     const responseObjects = await this.currentFileState().currentUsecase.run();
-    console.log("IN MAIN PANE");
-    console.log(responseObjects);
     let counter = 0;
     for (const { statusCode, body } of responseObjects) {
-      console.log(`${statusCode} ${body}`);
       const responsePane = document.createElement("div");
       responsePane.id = counter;
       counter += 1;

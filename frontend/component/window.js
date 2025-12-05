@@ -76,7 +76,7 @@ class Window {
   #wireRunButton() {
     document
       .getElementById("run-btn")
-      .addEventListener("click", () => this.#mainPane.run());
+      .addEventListener("click", async() => await this.#mainPane.run());
   }
 
   buildAndRegisterNavigationButton({ filepath, withOverrideAlert }) {
