@@ -15,9 +15,6 @@ class CoreApi {
       const method = step.do.method;
       const body = step.do.body;
       this.#resolve(body);
-      console.log(url);
-      console.log(method);
-      console.log(body);
 
       const headers = { "content-type": "application/json" };
       for (const header in step.do.headers) {
@@ -33,16 +30,13 @@ class CoreApi {
         body: JSON.stringify(body),
       })
       const json = await response.json();
-
-      console.log(json);
-      console.log("=====");
-      console.log(savedVariables);
-
       this.#updateSavedState({ json, savedVariables });
 
-      responses.push(JSON.stringify(json, null, 2));
+      responses.push({ statusCode: response.status, body: JSON.stringify(json, null, 2) });
     }
 
+    console.log("IN CORE");
+    console.log(responses);
     return responses;
   }
 
@@ -52,14 +46,11 @@ class CoreApi {
     }
     for (const [k, v] of Object.entries(savedVariables)) {
       if (looksLikeMetaVariable(v)) {
-        // console.log(`${k} --> ${v}`);
-        // console.log(json);
         this.#savedState[k] = lookup({ pointer: trim(v), json: json });
       } else {
         this.#savedState[k] = v;
       }
     }
-    console.log(`updated ${this.#savedState}`);
   }
 
   #findSaved(k) {
@@ -90,16 +81,10 @@ class CoreApi {
       const meta = trim(json.slice(start_i, end_i));
       const savedMeta = meta.replace(/^(saved\.)/, "");
 
-      console.log("<<<SUBSTITUTING>>>");
-      console.log(meta)
-      console.log(savedMeta)
       const metaValue = this.#findSaved(savedMeta);
       if (metaValue) {
-        console.log(">>>>>>>>");
-        console.log(metaValue);
         return json.replace(`{{${meta}}}`, metaValue);
       }
-      console.log(this.#savedState);
       throw new Error(`could not replace ${meta} with ${metaValue}`);
     }
 

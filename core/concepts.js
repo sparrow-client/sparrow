@@ -11,7 +11,8 @@ class Usecase {
 
   async run() {
     const jsonString = JSON.stringify(this.#json, null, 2);
-    const results = window.coreApi.runUsecase({ usecaseJson: jsonString });
+    const results = await window.coreApi.runUsecase({ usecaseJson: jsonString });
+    console.log("IN CORE ADAPTER");
     console.log(results);
     return results;
   }
