@@ -2,13 +2,17 @@ import * as http from "node:http";
 
 class CoreApi {
   #savedState;
+  #givenState;
   constructor() {
     this.#savedState = new Map();
+    this.#givenState = new Map();
   }
   async runUsecase({ usecaseJson }) {
     const json = JSON.parse(usecaseJson);
 
     const responses = [];
+
+    this.#initializeGivenState(json.given);
 
     for (const step of json.steps) {
       const url = this.#resolve(step.do.url);
@@ -55,8 +59,21 @@ class CoreApi {
     }
   }
 
+  #initializeGivenState(givenState) {
+    if (!givenState) {
+      return;
+    }
+    for (const [k, v] of Object.entries(givenState)) {
+      this.#givenState[k] = v;
+    }
+  }
+
   #findSaved(k) {
     return this.#savedState[k];
+  }
+
+  #findGiven(k) {
+    return this.#givenState[k];
   }
 
   #resolve(json) {
@@ -71,29 +88,46 @@ class CoreApi {
       return value;
     } else {
       for (const [k, v] of Object.entries(json)) {
-        this.#resolve(json[k]);
+        const resolved = this.#resolve(json[k]);
+        json[k] = resolved;
       }
     }
+    return json;
   }
 
   #substituteMetaVariable(json) {
     if (containsMetaVariable(json)) {
-      const start_i = json.indexOf("{");
-      const end_i = json.lastIndexOf("}") + 1;
-      const meta = trim(json.slice(start_i, end_i));
-      const savedMeta = meta.replace(/^(saved\.)/, "");
+      let tmp = json;
+      const regex = /{{[\w_\.]+}}/g;
 
-      const metaValue = this.#findSaved(savedMeta);
-      if (metaValue) {
-        return json.replace(`{{${meta}}}`, metaValue);
+      const metaParts = [];
+      let m;
+      while ((m = regex.exec(tmp))) {
+        metaParts.unshift({ metaReference: trim(m[0])});
       }
-      throw new Error(`could not replace ${meta} with ${metaValue}`);
-    }
 
+      for (const metaPart of metaParts) {
+        const meta = metaPart.metaReference;
+        const savedMeta = meta.replace(/^(saved\.)/, "");
+        const givenMeta = meta.replace(/^(given\.)/, "");
+
+        const saveMetaValue = this.#findSaved(savedMeta);
+        const givenMetaValue = this.#findGiven(givenMeta);
+
+        if (saveMetaValue) {
+          tmp = tmp.replace(`{{${meta}}}`, saveMetaValue);
+          continue;
+        } else if (givenMetaValue) {
+          tmp = tmp.replace(`{{${meta}}}`, givenMetaValue);
+          continue;
+        }
+        throw new Error(`could not replace ${meta}`);
+      }
+
+      return tmp;
+    }
     return json;
   }
-
-
 }
 
 function containsMetaVariable(str) {
