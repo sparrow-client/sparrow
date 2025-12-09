@@ -23,8 +23,7 @@ class CoreApi {
 
       const headers = { "content-type": "application/json" };
       for (const header in step.do.headers) {
-        headers.push(header);
-        headers.push(this.#resolve(step.do.headers[header]));
+        headers[header] = this.#resolve(step.do.headers[header]);
       }
 
       const savedVariables = step.do.saved;
